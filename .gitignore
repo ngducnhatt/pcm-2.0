@@ -1,0 +1,28 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local environment and secrets
+.env
+.env.local
+.env.*.local
+
+# logs, backups and local runtime files
+/logs/
+/backups/
+*.log
+*.pid
+
+# tooling
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+coverage/

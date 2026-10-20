@@ -1,0 +1,29 @@
+# PCM OpsFlow - Cloudflare Tunnel example.
+# Install cloudflared, run `cloudflared tunnel login`,
+# create the tunnel, then copy the generated credentials JSON to a protected folder.
+#
+# .env.local for this mode:
+#   APP_PUBLIC_URL=https://opsflow.example.com
+#   TRUST_PROXY=true
+#   PROXY_MODE=cloudflare
+#   COOKIE_SECURE=true
+#
+# Run: cloudflared tunnel --config C:\path\to\config.yml run pcm-opsflow
+
+tunnel: REPLACE-WITH-TUNNEL-UUID
+credentials-file: C:\Users\Administrator\.cloudflared\REPLACE-WITH-TUNNEL-UUID.json
+
+no-autoupdate: true
+metrics: 127.0.0.1:20241
+
+ingress:
+  - hostname: opsflow.example.com
+    service: http://127.0.0.1:3000
+    originRequest:
+      connectTimeout: 30s
+      tlsTimeout: 10s
+      tcpKeepAlive: 30s
+      noTLSVerify: false
+      # cloudflared sets CF-Connecting-IP itself; do not forward a spoofed value.
+      httpHostHeader: opsflow.example.com
+  - service: http_status:404

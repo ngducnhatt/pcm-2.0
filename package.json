@@ -1,0 +1,38 @@
+{
+  "name": "pcm-opsflow",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hệ thống vận hành PCM - backend REST API cho quy trình bán hàng, kho, kỹ thuật, bảo hành, giao hàng và thanh toán.",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "next dev -H 127.0.0.1 -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "serve": "node scripts/server-runner.mjs",
+    "health": "node scripts/healthcheck.mjs",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:admin": "tsx scripts/create-admin.ts",
+    "user:password": "tsx scripts/set-password.ts",
+    "test:flow": "tsx --test tests/flow.test.ts",
+    "test:auth": "tsx --test tests/auth.integration.test.ts",
+    "db:backup": "tsx scripts/backup.ts"
+  },
+  "dependencies": {
+    "dotenv": "18.0.8",
+    "mysql2": "3.24.6",
+    "next": "15.5.28",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "zod": "3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/react": "19.1.17",
+    "@types/react-dom": "19.1.11",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

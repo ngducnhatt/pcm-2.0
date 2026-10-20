@@ -1,0 +1,57 @@
+# PCM OpsFlow - Caddy reverse proxy example (direct HTTPS, no Cloudflare Tunnel).
+# Replace opsflow.example.com with the real DNS name.
+# Caddy obtains and renews the TLS certificate automatically.
+#
+# App must listen on 127.0.0.1:3000 only.
+# .env.local for this mode:
+#   APP_PUBLIC_URL=https://opsflow.example.com
+#   TRUST_PROXY=true
+#   PROXY_MODE=caddy
+#   COOKIE_SECURE=true
+
+{
+	# Caddy admin API stays local.
+	admin 127.0.0.1:2019
+	# Keep logs in the app folder for operational consistency.
+	log default {
+		output file "C:/path/to/pcm-opsflow/logs/caddy.log" {
+			roll_size 10MiB
+			roll_keep 10
+			roll_keep_for 720h
+		}
+		format json
+	}
+}
+
+opsflow.example.com {
+	encode zstd gzip
+
+	# Overwrite client-supplied X-Real-IP with the real peer address.
+	# PROXY_MODE=caddy makes the app prefer X-Real-IP.
+	reverse_proxy 127.0.0.1:3000 {
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+		# Do not accept arbitrary upstream request bodies.
+		transport http {
+			read_timeout 60s
+			write_timeout 60s
+		}
+	}
+
+	# Health/schema details are for local monitoring only.
+	@health path /api/health
+	respond @health 404
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}
